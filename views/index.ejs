@@ -8,6 +8,7 @@
             font-family: 'Tahoma', sans-serif;
             background-color: #f4f4f4;
             display: flex;
+            flex-direction: column; /* تغییر به حالت عمودی */
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -21,6 +22,7 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             text-align: center;
             width: 320px;
+            margin-bottom: 2rem; /* فاصله بین دو بخش */
         }
 
         .file-input-wrapper {
@@ -77,28 +79,51 @@
 </head>
 <body>
 
-<div class="upload-container">
-    <h2>File Upload</h2>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <div class="file-input-wrapper">
-            <label class="file-input-label">
-                Choose File
-                <input id="fileInput" type="file" name="file" accept="*/*" required />
-            </label>
-            <div id="fileName" class="file-name">See the file name...</div>
-        </div>
-        <button type="submit">Upload and Display</button>
-    </form>
-</div>
-
-<script>
-    const input = document.getElementById('fileInput');
-    const fileNameDiv = document.getElementById('fileName');
-    input.addEventListener('change', function () {
-        const fileName = input.files[0]?.name || '';
-        fileNameDiv.textContent = fileName;
-    });
-</script>
+    <div class="upload-container">
+        <h2>File Upload</h2>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <div class="file-input-wrapper">
+                <label class="file-input-label">
+                    Choose File
+                    <input id="fileInput1" type="file" name="file" accept="*/*" required />
+                </label>
+                <div id="fileName1" class="file-name">See the file name...</div>
+            </div>
+            <button type="submit">Upload and Display</button>
+        </form>
+    </div>
+    
+    <div class="upload-container">
+        <h2>Voice Upload</h2>
+        <form action="/upload_voice" method="post" enctype="multipart/form-data">
+            <div class="file-input-wrapper">
+                <label class="file-input-label">
+                    Choose File
+                    <input id="fileInput2" type="file" name="audioFile" accept="audio/*,video/*" required>
+                </label>
+                <div id="fileName2" class="file-name">See the file name...</div>
+            </div>
+            <button type="submit">Upload and Display</button>
+        </form>
+    </div>
+    
+    <script>
+        // برای تغییر نام فایل در فرم اول
+        const input1 = document.getElementById('fileInput1');
+        const fileNameDiv1 = document.getElementById('fileName1');
+        input1.addEventListener('change', function () {
+            const fileName = input1.files[0]?.name || '';
+            fileNameDiv1.textContent = fileName;
+        });
+    
+        // برای تغییر نام فایل در فرم دوم
+        const input2 = document.getElementById('fileInput2');
+        const fileNameDiv2 = document.getElementById('fileName2');
+        input2.addEventListener('change', function () {
+            const fileName = input2.files[0]?.name || '';
+            fileNameDiv2.textContent = fileName;
+        });
+    </script>
 
 </body>
 </html>
