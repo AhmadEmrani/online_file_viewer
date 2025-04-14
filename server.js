@@ -4,6 +4,8 @@ const mammoth = require('mammoth');
 const path = require('path');
 const fs = require('fs');
 const ejs = require('ejs');  // موتور قالب
+const pdfParse = require('pdf-parse');
+const pptx2json = require('pptx2json');
 
 const app = express();
 const port = 3000;
@@ -31,30 +33,56 @@ const storage = multer.diskStorage({
   });
   
   // دریافت و تبدیل فایل به متن
+ 
+
   app.post('/upload', upload.any(), (req, res) => {
-    // نمایش اطلاعات فایل‌ها
-    console.log(req.files);  // مشاهده فایل‌های ارسال شده
-  
     if (req.files && req.files.length > 0) {
-      // فقط اولین فایل را پردازش می‌کنیم
-      const filePath = req.files[0].path;
+      const file = req.files[0];
+      const filePath = file.path;
+      const ext = path.extname(file.originalname).toLowerCase();
   
-      mammoth.extractRawText({ path: filePath })
-        .then(result => {
-          const text = result.value;
+      const sendText = (text) => {
+        fs.unlink(filePath, () => {});  // حذف فایل پس از پردازش
+        res.render('content', { text: text || 'No text found.' });
+      };
   
-          // حذف فایل بعد از استخراج (اختیاری)
-          fs.unlink(filePath, () => {});
+      if (ext === '.docx') {
+        mammoth.extractRawText({ path: filePath })
+          .then(result => sendText(result.value))
+          .catch(err => res.status(500).send('Error processing Word file.'));
+      } else if (ext === '.pdf') {
+        const dataBuffer = fs.readFileSync(filePath);
+        pdfParse(dataBuffer)
+          .then(data => sendText(data.text))
+          .catch(err => res.status(500).send('Error processing PDF file.'));
+      } else if (ext === '.pptx') {
+        pptx2json.parse(filePath, (err, result) => {
+          if (err) {
+            return res.status(500).send('Error processing PPTX file.');
+          }
   
-          res.render('content', { text: text });
-        })
-        .catch(err => {
-          res.status(500).send('خطا در پردازش فایل');
+          const slides = result.slides || [];
+          const text = slides.map(slide => slide.text).join('\n\n');
+          sendText(text);
         });
+      } 
+      
+      
+      
+      
+      
+      
+      
+      
+      else {
+        res.status(400).send('Unsupported file type.');
+      }
     } else {
-      res.status(400).send('هیچ فایلی ارسال نشده است.');
+      res.status(400).send('No file uploaded.');
     }
   });
+  
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
