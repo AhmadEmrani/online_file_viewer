@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Content Display</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f9f9f9;
+      padding: 20px;
+      direction: rtl;
+    }
+
+    .search-box {
+      margin-bottom: 1rem;
+    }
+
+    input[type="text"] {
+      padding: 0.5rem;
+      width: 100%;
+      max-width: 400px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .content {
+      white-space: pre-wrap;
+      line-height: 1.7;
+      background: white;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .highlight {
+      background-color: yellow;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search in text..." />
+  </div>
+  <div id="textContent" class="content"><%- text %></div>
+
+  <script>
+    const input = document.getElementById('searchInput');
+    const content = document.getElementById('textContent');
+    const originalText = content.innerHTML;
+
+    input.addEventListener('input', () => {
+      const query = input.value.trim();
+      if (!query) {
+        content.innerHTML = originalText;
+        return;
+      }
+
+      const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(escapedQuery, 'gi');
+      const highlighted = originalText.replace(regex, match => '<span class="highlight">' + match + '</span>');
+      content.innerHTML = highlighted;
+    });
+  </script>
+
+</body>
+</html>
