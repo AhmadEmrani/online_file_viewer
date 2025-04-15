@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Content Display</title>
@@ -45,7 +47,7 @@
   <div class="search-box">
     <input type="text" id="searchInput" placeholder="Search in text..." />
   </div>
-  <div id="textContent" class="content"><%- text %></div>
+  <div class="markdown-body" style="padding: 20px;" id="textContent" class="content"><%- text %></div>
 
   <script>
     const input = document.getElementById('searchInput');
