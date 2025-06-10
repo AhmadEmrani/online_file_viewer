@@ -137,4 +137,4 @@ For full details, see the LICENSE file.
 
 ---
 
-Built with ❤️ by AhmadEmrani
+Built  by AhmadEmrani
